@@ -11,7 +11,7 @@ public class Util {
     private static final String USER_NAME = "root";
     private static final String PSSWORD = "barsik123";
 
-    public Connection getConnection() {
+    public static Connection getConnection() {
         Connection connection = null;
         try {
             Class.forName(DRIVER);
