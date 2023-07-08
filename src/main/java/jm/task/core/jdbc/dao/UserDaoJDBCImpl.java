@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDaoJDBCImpl extends Util implements UserDao {
-    Connection connection = getConnection();
+    private final Connection connection = getConnection();
     public UserDaoJDBCImpl() {
 
     }
@@ -21,7 +21,6 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     public void dropUsersTable() {
@@ -34,10 +33,8 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
     }
 
     public void saveUser(String name, String lastName, byte age) {
-        PreparedStatement preparedStatement = null;
         String sql ="INSERT into 1_PREPROJECT.USERS(name,lastName,age) VALUES (?,?,?)";
-        try {
-            preparedStatement= connection.prepareStatement(sql);
+        try (PreparedStatement preparedStatement= connection.prepareStatement(sql)) {
             preparedStatement.setString(1,name);
             preparedStatement.setString(2,lastName);
             preparedStatement.setInt(3,age);
@@ -45,14 +42,11 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     public void removeUserById(long id) {
-        PreparedStatement preparedStatement;
         String sql = "DELETE FROM 1_PREPROJECT.USERS WHERE ID = ?";
-        try {
-            preparedStatement = connection.prepareStatement(sql);
+        try(PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1,id);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -62,10 +56,8 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
 
     public List<User> getAllUsers() {
         List <User> users = new ArrayList<>();
-        Statement statement = null;
         String sql = "SELECT ID, NAME, LASTNAME, AGE from 1_PREPROJECT.USERS";
-        try {
-            statement = connection.createStatement();
+        try (Statement statement = connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
                 User user = new User();
